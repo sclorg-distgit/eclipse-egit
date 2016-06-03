@@ -2,14 +2,16 @@
 %{!?scl:%global pkg_name %{name}}
 %{?java_common_find_provides_and_requires}
 
+%global baserelease 0
+
 # EGit and Mylyn have circular dependencies
 # EGit can build bootstrapped when Mylyn not present
 %global bootstrap 0
-%global version_suffix 201506240215-r
+%global version_suffix 201601211800-r
 
 Name:             %{?scl_prefix}eclipse-egit
-Version:          4.0.1
-Release:          2.3.bs2%{?dist}
+Version:          4.2.0
+Release:          1.%{baserelease}%{?dist}
 Summary:          Eclipse Git Integration
 
 License:          EPL
@@ -20,12 +22,13 @@ Patch0:           remove-mylyn-dep.patch
 %endif
 
 BuildRequires:    %{?scl_prefix}tycho
-BuildRequires:    %{?scl_prefix}eclipse-jgit >= 4.0.0
-BuildRequires:    %{?scl_prefix}eclipse-jdt
+BuildRequires:    %{?scl_prefix}eclipse-jgit >= %{version}
+BuildRequires:    %{?scl_prefix}eclipse-license	
 %if ! %{bootstrap}
 BuildRequires:    %{?scl_prefix}eclipse-mylyn
 BuildRequires:    %{?scl_prefix}eclipse-mylyn-docs-wikitext
 %endif
+Requires:         %{?scl_prefix}eclipse-jgit >= %{version}
 
 BuildArch:        noarch
 
@@ -34,6 +37,7 @@ The eclipse-egit package contains Eclipse plugins for
 interacting with Git repositories.
 
 %if ! %{bootstrap}
+
 %package mylyn
 Summary:     Git integration for mylyn.
 
@@ -59,6 +63,7 @@ Git integration for mylyn.
 %pom_disable_module org.eclipse.egit.target
 %pom_disable_module org.eclipse.egit.core.test
 %pom_disable_module org.eclipse.egit.ui.test
+%pom_disable_module org.eclipse.egit.ui.importer.tests
 %pom_disable_module org.eclipse.egit.ui.importer
 %pom_disable_module org.eclipse.egit.gitflow.test
 %pom_disable_module org.eclipse.egit.mylyn.ui.test
@@ -69,44 +74,56 @@ Git integration for mylyn.
 %pom_disable_module org.eclipse.egit.mylyn-feature
 %endif
 
-%mvn_package org.eclipse.egit:egit-parent __noinstall
+%mvn_package "::pom::" __noinstall
 %if ! %{bootstrap}
 %mvn_package :*mylyn* mylyn
 %endif
 %mvn_package :* egit
-%{?scl:EOF}
 
+%{?scl:EOF}
 
 %build
 %{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_build -j -f
-%{?scl:EOF}
 
+%{?scl:EOF}
 
 %install
 %{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_install
-%{?scl:EOF}
 
+%{?scl:EOF}
 
 %files -f .mfiles-egit
 %doc LICENSE README.md
 
 %if ! %{bootstrap}
+
 %files mylyn -f .mfiles-mylyn
 %doc LICENSE README.md
 %endif
 
 %changelog
-* Thu Jul 16 2015 Mat Booth <mat.booth@redhat.com> - 4.0.1-2.3
-- Fix unowned directories
+* Tue Jan 26 2016 Sopot Cela <scela@redhat.com> - 4.2.0-1
+- Update to 4.2.0
 
-* Wed Jul 08 2015 Mat Booth <mat.booth@redhat.com> - 4.0.1-2.2
-- Non-bootstrap build to enable mylyn support
-
-* Thu Jul 02 2015 Mat Booth <mat.booth@redhat.com> - 4.0.1-2.1
+* Mon Jan 18 2016 Sopot Cela <scela@redhat.com> - 4.1.1-1.1
 - Import latest from Fedora
-- Enable bootstrap mode
+
+* Tue Dec 08 2015 Mat Booth <mat.booth@redhat.com> - 4.1.1-1
+- Update to latest upstream release
+
+* Wed Sep 30 2015 Mat Booth <mat.booth@redhat.com> - 4.1.0-1
+- Update to 4.1.0 release
+
+* Mon Sep 14 2015 Roland Grunberg <rgrunber@redhat.com> - 4.0.1-5
+- Rebuild as an Eclipse p2 Droplet.
+
+* Mon Jul 13 2015 Alexander Kurtakov <akurtako@redhat.com> 4.0.1-4
+- Enable importer plugin.
+
+* Wed Jul 08 2015 Mat Booth <mat.booth@redhat.com> - 4.0.1-3
+- Fix bootstrap build
 
 * Thu Jul 02 2015 Mat Booth <mat.booth@redhat.com> - 4.0.1-2
 - Drop incomplete SCL macros
