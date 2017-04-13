@@ -2,15 +2,15 @@
 %{!?scl:%global pkg_name %{name}}
 %{?java_common_find_provides_and_requires}
 
-%global baserelease 3
+%global baserelease 1
 
 # EGit and Mylyn have circular dependencies
 # EGit can build bootstrapped when Mylyn not present
 %global bootstrap 0
-%global version_suffix 201606070830-r
+%global version_suffix 201612231935-r
 
 Name:             %{?scl_prefix}eclipse-egit
-Version:          4.4.0
+Version:          4.6.0
 Release:          1.%{baserelease}%{?dist}
 Summary:          Eclipse Git Integration
 
@@ -22,6 +22,7 @@ Patch0:           remove-mylyn-dep.patch
 %endif
 
 BuildRequires:    %{?scl_prefix}tycho
+BuildRequires:    %{?scl_prefix_maven}maven-antrun-plugin
 BuildRequires:    %{?scl_prefix}eclipse-platform >= 1:4.6.0
 BuildRequires:    %{?scl_prefix}eclipse-jdt
 BuildRequires:    %{?scl_prefix}eclipse-jgit >= %{version}
@@ -109,15 +110,20 @@ set -e -x
 %endif
 
 %changelog
-* Fri Jul 29 2016 Mat Booth <mat.booth@redhat.com> - 4.4.0-1.3
-- Perform full non-bootstrap build
-
-* Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 4.4.0-1.2
-- Perform bootstrap build without mylyn
-- Add missing BR on JDT
-
-* Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 4.4.0-1.1
+* Mon Jan 16 2017 Mat Booth <mat.booth@redhat.com> - 4.6.0-1.1
 - Auto SCL-ise package for rh-eclipse46 collection
+
+* Wed Jan 04 2017 Mat Booth <mat.booth@redhat.com> - 4.6.0-1
+- Update to latest release
+
+* Tue Oct 4 2016 Alexander Kurtakov <akurtako@redhat.com> 4.5.0-1
+- Upgrade to 4.5.0.
+
+* Wed Aug 03 2016 Sopot Cela <scela@redhat.com> - 4.4.1-1
+- Upgrade to 4.4.1
+
+* Wed Jun 15 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.4.0-2
+- Add missing build-requires
 
 * Mon Jun 13 2016 Mat Booth <mat.booth@redhat.com> - 4.4.0-1
 - Update to latest release
