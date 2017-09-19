@@ -7,10 +7,10 @@
 # EGit and Mylyn have circular dependencies
 # EGit can build bootstrapped when Mylyn not present
 %global bootstrap 0
-%global version_suffix 201612231935-r
+%global version_suffix 201703071140-r
 
 Name:             %{?scl_prefix}eclipse-egit
-Version:          4.6.0
+Version:          4.6.1
 Release:          1.%{baserelease}%{?dist}
 Summary:          Eclipse Git Integration
 
@@ -50,7 +50,7 @@ Git integration for mylyn.
 %endif
 
 %prep
-%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOFSCL"}
 set -e -x
 %setup -q -n egit-%{version}.%{version_suffix}
 %if %{bootstrap}
@@ -83,21 +83,21 @@ set -e -x
 %mvn_package :*mylyn* mylyn
 %endif
 %mvn_package :* egit
-%{?scl:EOF}
+%{?scl:EOFSCL}
 
 
 %build
-%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOFSCL"}
 set -e -x
 %mvn_build -j -f
-%{?scl:EOF}
+%{?scl:EOFSCL}
 
 
 %install
-%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOFSCL"}
 set -e -x
 %mvn_install
-%{?scl:EOF}
+%{?scl:EOFSCL}
 
 
 %files -f .mfiles-egit
@@ -110,8 +110,14 @@ set -e -x
 %endif
 
 %changelog
-* Mon Jan 16 2017 Mat Booth <mat.booth@redhat.com> - 4.6.0-1.1
+* Mon Apr 03 2017 Mat Booth <mat.booth@redhat.com> - 4.6.1-1.1
 - Auto SCL-ise package for rh-eclipse46 collection
+
+* Fri Mar 31 2017 Nick Boldt <nboldt@redhat.com> - 4.6.1-1
+- Update to Neon.3 release version; depends on eclipse-jgit 4.6.1
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.6.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
 * Wed Jan 04 2017 Mat Booth <mat.booth@redhat.com> - 4.6.0-1
 - Update to latest release
